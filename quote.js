@@ -1,3 +1,4 @@
+
 //the env connection should be at the top
 const dotenv = require('dotenv').config();
 
@@ -7,17 +8,35 @@ const  mongoose = require('mongoose');
 const Quote = require("./models/Quote");
 
 const PORT = 3000;
-const app = express ();
+const app = express();
+
  
 // connect to mongo
 mongoose.connect(process.env.MONGO_URL)
 .then (() => console.log('Mongo coneccted'))
 .catch(err => console.log(err));
 
+
 //route
 app.get("/", async(req,res) =>{
     try {
         const quotes = await Quote.find();
+
+ function getquotes(){
+   const data = fs.readFileSync('quotes.json');
+   return JSON.parse(data);
+ }
+ const connectDB = async () => {
+   try{
+    const connection = await mongoose.connect(process.env.MONGO_URI)
+    console.log("db connected successfully")
+   }catch(error){
+      console.log("connection error:",error.message)
+      process.exit(1)
+   }
+ }
+ connectDB()
+
 
         if (quotes.length ===0){
             return res.send('No quotes found!');
